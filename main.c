@@ -1,16 +1,13 @@
 /******************************************************************************
 * File Name: main.c
 *
-* Version: 1.00
+* Description: This is the source code for the PSoC 6 MCU Watchdog Timer Example.
 *
-* Description: This is the source code for the PSoC 6 MCU Watchdog Timer Example
-*              for ModusToolbox.
-*
-* Related Document: See Readme.md
+* Related Document: See README.md
 *
 *
 *******************************************************************************
-* Copyright 2019, Cypress Semiconductor Corporation. All rights reserved.
+* Copyright 2019-2020, Cypress Semiconductor Corporation. All rights reserved.
 *******************************************************************************
 * This software, including source code, documentation and related materials
 * ("Software"), is owned by Cypress Semiconductor Corporation or one of its
@@ -56,11 +53,17 @@
 #define WDT_IRQ__INTC_NUMBER                srss_interrupt_IRQn
 #define WDT_IRQ__INTC_CORTEXM4_PRIORITY     7
 
-/* WDT periodic interrupt timing */
-#define WDT_INTERRUPT_INTERVAL              1000  //ms
+/* ILO Frequency in Hz */
+#define ILO_FREQUENCY_HZ					32000
+
+/* WDT interrupt period in milliseconds. Max limit is 2047ms. */
+#define WDT_INTERRUPT_INTERVAL_MS           1000
 
 /* Match count =  Desired interrupt interval in seconds x ILO Frequency in Hz */
-#define WDT_MATCH_COUNT                     WDT_INTERRUPT_INTERVAL * CY_SYSCLK_ILO_FREQ / 1000
+#define WDT_MATCH_COUNT                     (WDT_INTERRUPT_INTERVAL_MS * ILO_FREQUENCY_HZ / 1000)
+
+/* WDT time out for reset mode, in milliseconds. Max limit is given by CYHAL_WDT_MAX_TIMEOUT_MS */
+#define WDT_TIME_OUT_MS                     4000
 
 /*******************************************************************************
 * Function Prototypes
@@ -73,9 +76,12 @@ void WdtInterruptHandler(void);
 ********************************************************************************/
 /* WDT interrupt configuration structure */
 const cy_stc_sysint_t WDT_IRQ_cfg = {
-    .intrSrc = (IRQn_Type)WDT_IRQ__INTC_NUMBER,
+    .intrSrc = (IRQn_Type) WDT_IRQ__INTC_NUMBER,
     .intrPriority = WDT_IRQ__INTC_CORTEXM4_PRIORITY
 };
+
+/* WDT object */
+cyhal_wdt_t wdt_obj;
 
 /*******************************************************************************
 * Function Name: main
@@ -105,27 +111,27 @@ int main(void)
     }
 
     /* Initialize the User LED */
-    cyhal_gpio_init((cyhal_gpio_t) CYBSP_USER_LED, CYHAL_GPIO_DIR_OUTPUT, CYHAL_GPIO_DRIVE_STRONG, CYBSP_LED_STATE_OFF);
+    cyhal_gpio_init(CYBSP_USER_LED, CYHAL_GPIO_DIR_OUTPUT, CYHAL_GPIO_DRIVE_STRONG, CYBSP_LED_STATE_OFF);
     
     /* Check the reason for device restart */
-    if(CY_SYSLIB_RESET_HWWDT == Cy_SysLib_GetResetReason())
+    if (CYHAL_SYSTEM_RESET_WDT == cyhal_system_get_reset_reason())
     {
         /* It's WDT reset event - blink LED twice */
-        cyhal_gpio_write((cyhal_gpio_t) CYBSP_USER_LED, CYBSP_LED_STATE_ON);
-        Cy_SysLib_Delay(100);
-        cyhal_gpio_write((cyhal_gpio_t) CYBSP_USER_LED, CYBSP_LED_STATE_OFF);
-        Cy_SysLib_Delay(200);
-        cyhal_gpio_write((cyhal_gpio_t) CYBSP_USER_LED, CYBSP_LED_STATE_ON);
-        Cy_SysLib_Delay(100);
-        cyhal_gpio_write((cyhal_gpio_t) CYBSP_USER_LED, CYBSP_LED_STATE_OFF);
+        cyhal_gpio_write(CYBSP_USER_LED, CYBSP_LED_STATE_ON);
+        cyhal_system_delay_ms(100);
+        cyhal_gpio_write(CYBSP_USER_LED, CYBSP_LED_STATE_OFF);
+        cyhal_system_delay_ms(200);
+        cyhal_gpio_write(CYBSP_USER_LED, CYBSP_LED_STATE_ON);
+        cyhal_system_delay_ms(100);
+        cyhal_gpio_write(CYBSP_USER_LED, CYBSP_LED_STATE_OFF);
     }
     else
     {
         /* It's Power-On reset or XRES event - blink LED once */
-        cyhal_gpio_write((cyhal_gpio_t) CYBSP_USER_LED, CYBSP_LED_STATE_ON);
-        Cy_SysLib_Delay(100);
-        cyhal_gpio_write((cyhal_gpio_t) CYBSP_USER_LED, CYBSP_LED_STATE_OFF);;
-        Cy_SysLib_Delay(100);
+        cyhal_gpio_write(CYBSP_USER_LED, CYBSP_LED_STATE_ON);
+        cyhal_system_delay_ms(100);
+        cyhal_gpio_write(CYBSP_USER_LED, CYBSP_LED_STATE_OFF);;
+        cyhal_system_delay_ms(100);
     }
 
     /* Initialize WDT */
@@ -134,27 +140,27 @@ int main(void)
     /* Enable global interrupt */
     __enable_irq();
 
-    for(;;)
+    for (;;)
     {
-        #if(WDT_DEMO == WDT_RESET_DEMO)
-            /* Clear WDT match event */
-            Cy_WDT_ClearWatchdog();
+        #if (WDT_DEMO == WDT_RESET_DEMO)
+            /* Reset WDT */
+            cyhal_wdt_kick(&wdt_obj);
 
             #if defined(EXECUTION_BLOCK)
             while(1);
             #endif
 
             /* Constant delay of 1000ms */
-            Cy_SysLib_Delay(1000);
+            cyhal_system_delay_ms(1000);
 
             /* Invert the state of LED */
-            cyhal_gpio_toggle((cyhal_gpio_t) CYBSP_USER_LED);
+            cyhal_gpio_toggle(CYBSP_USER_LED);
         #endif
 
-        #if(WDT_DEMO == WDT_INTERRUPT_DEMO)
+        #if (WDT_DEMO == WDT_INTERRUPT_DEMO)
             #if defined(DEEPSLEEP_ENABLE)
             /* Code to demonstrate wake up from deep sleep */
-            Cy_SysPm_CpuEnterDeepSleep(CY_SYSPM_WAIT_FOR_INTERRUPT);
+            cyhal_syspm_deepsleep();
             #endif
         #endif
     }
@@ -175,37 +181,47 @@ int main(void)
 *******************************************************************************/
 void InitializeWDT()
 {
-     /* Step 1- Unlock WDT */
-    Cy_WDT_Unlock();
+    cy_rslt_t result;
 
-    /* Step 2- Write the ignore bits - operate with full 16 bits */
-    Cy_WDT_SetIgnoreBits(0);
+    #if (WDT_DEMO == WDT_INTERRUPT_DEMO)
 
-    /* Step 3- Write match value */
-    #if(WDT_DEMO == WDT_INTERRUPT_DEMO)
+        /* Step 1- Unlock WDT */
+        Cy_WDT_Unlock();
+
+        /* Step 2- Write the ignore bits - operate with full 16 bits */
+        Cy_WDT_SetIgnoreBits(0);
+
+        /* Step 3- Write match value */
         Cy_WDT_SetMatch(WDT_MATCH_COUNT);
-    #else
-        Cy_WDT_SetMatch(0);
-    #endif
 
-    /* Step 4- Clear match event interrupt, if any */
-    Cy_WDT_ClearInterrupt();
+        /* Step 4- Clear match event interrupt, if any */
+        Cy_WDT_ClearInterrupt();
 
-    /* Step 5- Enable ILO */
-    Cy_SysClk_IloEnable();
+        /* Step 5- Enable ILO */
+        Cy_SysClk_IloEnable();
 
-    /* Step 6 - Enable interrupt if periodic interrupt mode selected */
-    #if(WDT_DEMO == WDT_INTERRUPT_DEMO)
+        /* Step 6 - Enable interrupt if periodic interrupt mode selected */
         Cy_SysInt_Init(&WDT_IRQ_cfg, WdtInterruptHandler);
         NVIC_EnableIRQ(WDT_IRQ_cfg.intrSrc);
         Cy_WDT_UnmaskInterrupt();
+
+        /* Step 7- Enable WDT */
+        Cy_WDT_Enable();
+
+        /* Step 8- Lock WDT configuration */
+        Cy_WDT_Lock();
+    #else /* Reset Demo */
+
+        /* Initialize the WDT */
+        result = cyhal_wdt_init(&wdt_obj, WDT_TIME_OUT_MS);
+
+        /* WDT initialization failed. Stop program execution */
+        if (result != CY_RSLT_SUCCESS)
+        {
+            CY_ASSERT(0);
+        }
+
     #endif
-
-    /* Step 7- Enable WDT */
-    Cy_WDT_Enable();
-
-    /* Step 8- Lock WDT configuration */
-    Cy_WDT_Lock();
 }
 
 /*******************************************************************************
@@ -224,7 +240,7 @@ void InitializeWDT()
 void WdtInterruptHandler(void)
 {
     /* Check if the interrupt is from WDT */
-    if(SRSS_SRSS_INTR & SRSS_SRSS_INTR_WDT_MATCH_Msk)
+    if (SRSS_SRSS_INTR & SRSS_SRSS_INTR_WDT_MATCH_Msk)
     {
         /* Clear WDT Interrupt */
         Cy_WDT_ClearInterrupt();
@@ -238,7 +254,7 @@ void WdtInterruptHandler(void)
         Cy_WDT_Lock();
 
         /* Invert the state of LED */
-        cyhal_gpio_toggle((cyhal_gpio_t) CYBSP_USER_LED);
+        cyhal_gpio_toggle(CYBSP_USER_LED);
     }
 }
 
