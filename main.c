@@ -8,7 +8,7 @@
 *
 *
 *******************************************************************************
-* Copyright 2019-2021, Cypress Semiconductor Corporation (an Infineon company) or
+* Copyright 2022, Cypress Semiconductor Corporation (an Infineon company) or
 * an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
 *
 * This software, including source code, documentation and related
@@ -95,7 +95,7 @@ int main(void)
     cyhal_gpio_init(CYBSP_USER_LED, CYHAL_GPIO_DIR_OUTPUT, CYHAL_GPIO_DRIVE_STRONG, CYBSP_LED_STATE_OFF);
     
     /* Check the reason for device restart */
-    if (CYHAL_SYSTEM_RESET_WDT == cyhal_system_get_reset_reason())
+    if (CYHAL_SYSTEM_RESET_WDT == (cyhal_system_get_reset_reason() & CYHAL_SYSTEM_RESET_WDT))
     {
         /* It's WDT reset event - blink LED twice */
         cyhal_gpio_write(CYBSP_USER_LED, CYBSP_LED_STATE_ON);
@@ -114,6 +114,9 @@ int main(void)
         cyhal_gpio_write(CYBSP_USER_LED, CYBSP_LED_STATE_OFF);;
         cyhal_system_delay_ms(100);
     }
+
+    /* Clears the reset cause register */
+    cyhal_system_clear_reset_reason();
 
     /* Initialize WDT */
     initialize_wdt();
@@ -165,6 +168,5 @@ void initialize_wdt()
         CY_ASSERT(0);
     }
 }
-
 
 /* [] END OF FILE */
