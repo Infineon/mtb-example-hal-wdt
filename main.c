@@ -1,13 +1,13 @@
-/******************************************************************************
+/*******************************************************************************
 * File Name: main.c
 *
-* Description: This is the source code for the PSoC 6 MCU Watchdog Timer Example.
-*              for ModusToolbox.
+* Description: This is the source code for the Watchdog Timer Example for
+* ModusToolbox.
 *
 * Related Document: See README.md
 *
 *
-*******************************************************************************
+********************************************************************************
 * Copyright 2022, Cypress Semiconductor Corporation (an Infineon company) or
 * an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
 *
@@ -40,36 +40,45 @@
 * so agrees to indemnify Cypress against all liability.
 *******************************************************************************/
 
+/*******************************************************************************
+* Header Files
+*******************************************************************************/
 #include "cyhal.h"
 #include "cybsp.h"
 
+
 /*******************************************************************************
 * Macros
-********************************************************************************/
-
-/* WDT time out for reset mode, in milliseconds. Max limit is given by CYHAL_WDT_MAX_TIMEOUT_MS */
+*******************************************************************************/
+/* WDT time out for reset mode, in milliseconds. Max limit is given by
+ * CYHAL_WDT_MAX_TIMEOUT_MS */
 #define WDT_TIME_OUT_MS                     4000
 #define ENABLE_BLOCKING_FUNCTION            0
 
-/*******************************************************************************
-* Function Prototypes
-********************************************************************************/
-void initialize_wdt(void);
 
 /*******************************************************************************
 * Global Variables
-********************************************************************************/
-
+*******************************************************************************/
 /* WDT object */
 cyhal_wdt_t wdt_obj;
 
- 
+
+/*******************************************************************************
+* Function Prototypes
+*******************************************************************************/
+void initialize_wdt(void);
+
+
+/*******************************************************************************
+* Function Definitions
+*******************************************************************************/
+
 /*******************************************************************************
 * Function Name: main
 ********************************************************************************
 * Summary:
-* This is the main function for CM4 CPU. It demonstrates the WDT reset 
-* 
+* This is the main function which demonstrates the WDT reset 
+*
 *
 * Parameters:
 *  void
@@ -84,7 +93,7 @@ int main(void)
 
     /* Initialize the device and board peripherals */
     result = cybsp_init();
-    
+
     /* Board init failed. Stop program execution */
     if (result != CY_RSLT_SUCCESS)
     {
@@ -92,10 +101,17 @@ int main(void)
     }
 
     /* Initialize the User LED */
-    cyhal_gpio_init(CYBSP_USER_LED, CYHAL_GPIO_DIR_OUTPUT, CYHAL_GPIO_DRIVE_STRONG, CYBSP_LED_STATE_OFF);
-    
+    result = cyhal_gpio_init(CYBSP_USER_LED, CYHAL_GPIO_DIR_OUTPUT,
+            CYHAL_GPIO_DRIVE_STRONG, CYBSP_LED_STATE_OFF);
+    /* LED initialization failed. Stop program execution */
+    if (result != CY_RSLT_SUCCESS)
+    {
+        CY_ASSERT(0);
+    }
+
     /* Check the reason for device restart */
-    if (CYHAL_SYSTEM_RESET_WDT == (cyhal_system_get_reset_reason() & CYHAL_SYSTEM_RESET_WDT))
+    if (CYHAL_SYSTEM_RESET_WDT == (cyhal_system_get_reset_reason() &
+            CYHAL_SYSTEM_RESET_WDT))
     {
         /* It's WDT reset event - blink LED twice */
         cyhal_gpio_write(CYBSP_USER_LED, CYBSP_LED_STATE_ON);
@@ -142,6 +158,7 @@ int main(void)
     }
 }
 
+
 /*******************************************************************************
 * Function Name: InitializeWDT
 ********************************************************************************
@@ -168,5 +185,6 @@ void initialize_wdt()
         CY_ASSERT(0);
     }
 }
+
 
 /* [] END OF FILE */
