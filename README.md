@@ -9,7 +9,7 @@ Enable an infinite loop in the `main()` function to block the execution. The dev
 
 [View this README on GitHub.](https://github.com/Infineon/mtb-example-hal-wdt)
 
-[Provide feedback on this code example.](https://cypress.co1.qualtrics.com/jfe/form/SV_1NTns53sK2yiljn?Q_EED=eyJVbmlxdWUgRG9jIElkIjoiQ0UyMjU0NjgiLCJTcGVjIE51bWJlciI6IjAwMi0yNTQ2OCIsIkRvYyBUaXRsZSI6IkhBTDogV2F0Y2hkb2cgVGltZXIiLCJyaWQiOiJzZGFrIiwiRG9jIHZlcnNpb24iOiIzLjIuMCIsIkRvYyBMYW5ndWFnZSI6IkVuZ2xpc2giLCJEb2MgRGl2aXNpb24iOiJNQ0QiLCJEb2MgQlUiOiJJQ1ciLCJEb2MgRmFtaWx5IjoiUFNPQyJ9)
+[Provide feedback on this code example.](https://cypress.co1.qualtrics.com/jfe/form/SV_1NTns53sK2yiljn?Q_EED=eyJVbmlxdWUgRG9jIElkIjoiQ0UyMjU0NjgiLCJTcGVjIE51bWJlciI6IjAwMi0yNTQ2OCIsIkRvYyBUaXRsZSI6IkhBTDogV2F0Y2hkb2cgVGltZXIiLCJyaWQiOiJzZGFrIiwiRG9jIHZlcnNpb24iOiIzLjMuMCIsIkRvYyBMYW5ndWFnZSI6IkVuZ2xpc2giLCJEb2MgRGl2aXNpb24iOiJNQ0QiLCJEb2MgQlUiOiJJQ1ciLCJEb2MgRmFtaWx5IjoiUFNPQyJ9)
 
 ## Requirements
 
@@ -40,6 +40,10 @@ Enable an infinite loop in the `main()` function to block the execution. The dev
 - [PSoC&trade; 62S1 Wi-Fi Bluetooth&reg; pioneer kit](https://www.infineon.com/CYW9P62S1-43012EVB-01) (`CYW9P62S1-43012EVB-01`)
 - [PSoC&trade; 62S3 Wi-Fi Bluetooth&reg; prototyping kit](https://www.infineon.com/CY8CPROTO-062S3-4343W) (`CY8CPROTO-062S3-4343W`)
 - [PSoC&trade; 64 "Secure Boot" Wi-Fi Bluetooth&reg; pioneer kit](https://www.infineon.com/CY8CKIT-064B0S2-4343W) (`CY8CKIT-064B0S2-4343W`)
+- [PSoC&trade; 62S4 pioneer kit](https://www.infineon.com/CY8CKIT-062S4) (`CY8CKIT-062S4`)
+- [PSoC&trade; 62S2 evaluation kit](https://www.infineon.com/CY8CEVAL-062S2) (`CY8CEVAL-062S2`, `CY8CEVAL-062S2-LAI-4373M2`, `CY8CEVAL-062S2-MUR-43439M2` )
+- [PSoC&trade; 64 "Secure Boot" prototyping kit](https://www.infineon.com/CY8CPROTO-064B0S3) (`CY8CPROTO-064B0S3`)
+- [PSoC&trade; 64 "Secure Boot" prototyping kit](https://www.infineon.com/CY8CPROTO-064S1-SB) (`CY8CPROTO-064S1-SB`)
 - [XMC7200 evaluation kit](https://www.infineon.com/KIT_XMC72_EVK) (`KIT_XMC72_EVK`)
 - [EZ-BLE Arduino Evaluation Board](https://www.infineon.com/cms/en/product/evaluation-boards/cyble-416045-eval/) (`CYBLE-416045-EVAL`)
 - AIROC&trade; CYW20829 Bluetooth&reg; LE evaluation kit (`CYW920829M2EVK-02`)
@@ -257,6 +261,7 @@ Document Title: *CE225468* - *HAL: Watchdog Timer*
 | 3.0.0   | Major update to support ModusToolbox&trade; v3.0, added support for KIT-XMC72-EVK. This version is not backward compatible with previous versions of ModusToolbox |
 | 3.1.0   | Added BSP support for CYW920829M2EVB-01 |
 | 3.2.0   | Removed CYW920829M2EVB-01 from supported kits <br> Added support for CYBLE-416045-EVAL and CYW920829M2EVK-02 |
+| 3.3.0   | Added BSP support for CY8CKIT-062S4, CY8CEVAL-062S2, CY8CEVAL-062S2-MUR-43439M2, CY8CEVAL-062S2-LAI-4373M2, CY8CPROTO-064B0S3, and CY8CPROTO-064S1-SB |
 
 <br />
 
