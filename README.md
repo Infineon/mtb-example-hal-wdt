@@ -9,7 +9,7 @@ Enable an infinite loop in the `main()` function to block the execution. The dev
 
 [View this README on GitHub.](https://github.com/Infineon/mtb-example-hal-wdt)
 
-[Provide feedback on this code example.](https://cypress.co1.qualtrics.com/jfe/form/SV_1NTns53sK2yiljn?Q_EED=eyJVbmlxdWUgRG9jIElkIjoiQ0UyMjU0NjgiLCJTcGVjIE51bWJlciI6IjAwMi0yNTQ2OCIsIkRvYyBUaXRsZSI6IkhBTDogV2F0Y2hkb2cgVGltZXIiLCJyaWQiOiJzZGFrIiwiRG9jIHZlcnNpb24iOiIzLjMuMCIsIkRvYyBMYW5ndWFnZSI6IkVuZ2xpc2giLCJEb2MgRGl2aXNpb24iOiJNQ0QiLCJEb2MgQlUiOiJJQ1ciLCJEb2MgRmFtaWx5IjoiUFNPQyJ9)
+[Provide feedback on this code example.](https://cypress.co1.qualtrics.com/jfe/form/SV_1NTns53sK2yiljn?Q_EED=eyJVbmlxdWUgRG9jIElkIjoiQ0UyMjU0NjgiLCJTcGVjIE51bWJlciI6IjAwMi0yNTQ2OCIsIkRvYyBUaXRsZSI6IkhBTDogV2F0Y2hkb2cgVGltZXIiLCJyaWQiOiJzZGFrIiwiRG9jIHZlcnNpb24iOiIzLjMuMSIsIkRvYyBMYW5ndWFnZSI6IkVuZ2xpc2giLCJEb2MgRGl2aXNpb24iOiJNQ0QiLCJEb2MgQlUiOiJJQ1ciLCJEb2MgRmFtaWx5IjoiUFNPQyJ9)
 
 ## Requirements
 
@@ -17,7 +17,7 @@ Enable an infinite loop in the `main()` function to block the execution. The dev
 - Board support package (BSP) minimum required version for:
    - PSoC&trade; 6 MCU: v4.0.0
    - KIT_XMC72_EVK: v1.0.0
-   - CYW920829M2EVK-02: v1.0.0.Beta4
+   - CYW920829M2EVK-02: v1.0.1
 - Programming language: C
 - Associated parts: All [PSoC&trade; 6 MCU](https://www.infineon.com/cms/en/product/microcontroller/32-bit-psoc-arm-cortex-microcontroller/psoc-6-32-bit-arm-cortex-m4-mcu) parts, [XMC7000 MCU](https://www.infineon.com/cms/en/product/microcontroller/32-bit-industrial-microcontroller-based-on-arm-cortex-m/), [AIROC&trade; CYW20829 Bluetooth&reg; LE SoC](https://www.infineon.com/cms/en/product/promopages/airoc20829)
 
@@ -32,6 +32,7 @@ Enable an infinite loop in the `main()` function to block the execution. The dev
 
 
 - [PSoC&trade; 6 Wi-Fi Bluetooth&reg; prototyping kit](https://www.infineon.com/CY8CPROTO-062-4343W) (`CY8CPROTO-062-4343W`) – Default value of `TARGET`
+- [AIROC&trade; CYW20829 Bluetooth&reg; LE evaluation kit](https://www.infineon.com/CYW920829M2EVK-02) (`CYW920829M2EVK-02`)
 - [PSoC&trade; 6 Wi-Fi Bluetooth&reg; pioneer kit](https://www.infineon.com/CY8CKIT-062-WIFI-BT) (`CY8CKIT-062-WIFI-BT`)
 - [PSoC&trade; 6 Bluetooth&reg; LE pioneer kit](https://www.infineon.com/CY8CKIT-062-BLE) (`CY8CKIT-062-BLE`)
 - [PSoC&trade; 6 Bluetooth&reg; LE prototyping kit](https://www.infineon.com/CY8CPROTO-063-BLE) (`CY8CPROTO-063-BLE`)
@@ -46,7 +47,7 @@ Enable an infinite loop in the `main()` function to block the execution. The dev
 - [PSoC&trade; 64 "Secure Boot" prototyping kit](https://www.infineon.com/CY8CPROTO-064S1-SB) (`CY8CPROTO-064S1-SB`)
 - [XMC7200 evaluation kit](https://www.infineon.com/KIT_XMC72_EVK) (`KIT_XMC72_EVK`)
 - [EZ-BLE Arduino Evaluation Board](https://www.infineon.com/cms/en/product/evaluation-boards/cyble-416045-eval/) (`CYBLE-416045-EVAL`)
-- AIROC&trade; CYW20829 Bluetooth&reg; LE evaluation kit (`CYW920829M2EVK-02`)
+
 
 ## Hardware Setup
 
@@ -262,7 +263,7 @@ Document Title: *CE225468* - *HAL: Watchdog Timer*
 | 3.1.0   | Added BSP support for CYW920829M2EVB-01 |
 | 3.2.0   | Removed CYW920829M2EVB-01 from supported kits <br> Added support for CYBLE-416045-EVAL and CYW920829M2EVK-02 |
 | 3.3.0   | Added BSP support for CY8CKIT-062S4, CY8CEVAL-062S2, CY8CEVAL-062S2-MUR-43439M2, CY8CEVAL-062S2-LAI-4373M2, CY8CPROTO-064B0S3, and CY8CPROTO-064S1-SB |
-
+| 3.3.1   | Readme Updated |
 <br />
 
 ---------------------------------------------------------
