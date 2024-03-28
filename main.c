@@ -8,7 +8,7 @@
 *
 *
 ********************************************************************************
-* Copyright 2022-2023, Cypress Semiconductor Corporation (an Infineon company) or
+* Copyright 2022-2024, Cypress Semiconductor Corporation (an Infineon company) or
 * an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
 *
 * This software, including source code, documentation and related
@@ -45,6 +45,7 @@
 *******************************************************************************/
 #include "cyhal.h"
 #include "cybsp.h"
+#include "cy_retarget_io.h"
 
 
 /*******************************************************************************
@@ -109,10 +110,26 @@ int main(void)
         CY_ASSERT(0);
     }
 
+    /* Initialize the retarget-io to use the debug UART port */
+    result = cy_retarget_io_init(CYBSP_DEBUG_UART_TX, CYBSP_DEBUG_UART_RX,
+                                     CY_RETARGET_IO_BAUDRATE);
+    /* retarget-io initialization failed. Stop program execution */
+    if (result != CY_RSLT_SUCCESS)
+    {
+        CY_ASSERT(0);
+    }
+
+    /* \x1b[2J\x1b[;H - ANSI ESC sequence for clear screen */
+    printf("\x1b[2J\x1b[;H");
+    printf("******************"
+           "HAL: Watchdog Timer"
+           "****************** \r\n\n");
+
     /* Check the reason for device restart */
     if (CYHAL_SYSTEM_RESET_WDT == (cyhal_system_get_reset_reason() &
             CYHAL_SYSTEM_RESET_WDT))
     {
+        printf("Reset event from Watchdog Timer\r\n");
         /* It's WDT reset event - blink LED twice */
         cyhal_gpio_write(CYBSP_USER_LED, CYBSP_LED_STATE_ON);
         cyhal_system_delay_ms(100);
@@ -124,6 +141,7 @@ int main(void)
     }
     else
     {
+        printf("Reset event from Power-On or XRES\r\n");
         /* It's Power-On reset or XRES event - blink LED once */
         cyhal_gpio_write(CYBSP_USER_LED, CYBSP_LED_STATE_ON);
         cyhal_system_delay_ms(100);
